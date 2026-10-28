@@ -8,7 +8,7 @@ const dict = {
   skip: { en: 'Skip to content', zh: '跳到主要內容' },
 
   // Home
-  home_headline: { en: 'Ready for your next big moment?', zh: '準備好迎接下一個重要時刻了嗎？' },
+  home_headline: { en: 'From preparation to presentation.', zh: 'From preparation to presentation.' },
   home_subheadline: {
     en: 'Practice the interaction, not just the speech. Rehearse with a simulated audience that reacts in real time.',
     zh: '練習互動，而不只是演講。與模擬觀眾一起排練，即時反應。',

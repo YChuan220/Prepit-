@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session review · Prep!</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="fonts/host-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header id="site-header" class="relative z-40"></header>
+
+  <main id="main" class="page pb-24 pt-4">
+    <!-- Loading state: analysis runs inside the review page -->
+    <section id="analyzing" class="mx-auto mt-10 max-w-lg" aria-live="polite">
+      <div class="book px-6 pb-8 pt-12 text-center md:px-10">
+        <span class="book-tab bg-mint">
+          <i data-lucide="sparkles" class="h-4 w-4" aria-hidden="true"></i>
+          <span data-i18n="review_title"></span>
+        </span>
+        <h1 class="heading" data-i18n="complete_title"></h1>
+        <p class="mt-2 text-ink/80" data-i18n="complete_analyzing"></p>
+        <ol id="analysis-steps" class="mt-8 space-y-2.5 text-left"></ol>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <div id="report" class="mx-auto max-w-[1040px]" hidden>
+      <a href="index.html" class="link-back">
+        <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i>
+        <span data-i18n="review_backHome"></span>
+      </a>
+      <h1 id="report-title" class="display-lg mt-4" tabindex="-1" data-i18n="review_title"></h1>
+      <p class="mt-3 max-w-3xl text-meta text-ink/75" data-i18n="review_prototype"></p>
+
+      <!-- Replay -->
+      <section class="mt-10" aria-labelledby="replay-title">
+        <h2 id="replay-title" class="sr-only" data-i18n="review_replay"></h2>
+        <div class="relative overflow-hidden rounded-[30px] border-line border-outline bg-slate shadow-hard-amber md:rounded-[44px]">
+          <div class="relative aspect-video">
+            <video id="replay" class="hidden h-full w-full object-cover" playsinline preload="metadata"></video>
+            <div id="no-recording" class="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center text-ground">
+              <i data-lucide="users" class="h-10 w-10" aria-hidden="true"></i>
+              <p class="font-display text-lg font-bold" data-i18n="review_noRecording"></p>
+              <p class="text-meta text-ground/80"><span data-i18n="review_duration"></span>: <span id="duration-text" class="tabular-nums"></span></p>
+            </div>
+            <div id="play-wrap" class="pointer-events-none absolute inset-0 flex items-center justify-center" hidden>
+              <button type="button" id="btn-play" class="btn btn-warm pointer-events-auto !h-16 !w-16 !p-0">
+                <span id="play-icon" class="inline-flex"><i data-lucide="play" class="h-7 w-7" aria-hidden="true"></i></span>
+                <span id="play-label" class="sr-only"></span>
+              </button>
+            </div>
+            <p id="video-time" class="chip absolute bottom-4 right-4 hidden !bg-panel font-display tabular-nums">00:00</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="mt-16" aria-labelledby="summary-title">
+        <h2 id="summary-title" class="heading" data-i18n="review_summary"></h2>
+        <ul id="scores" class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5"></ul>
+        <p class="mt-4 text-meta italic text-ink/75" data-i18n="review_disclaimer"></p>
+      </section>
+
+      <!-- Timestamped feedback in the shared book -->
+      <section class="mt-24" aria-labelledby="timeline-title">
+        <div class="book px-5 pb-8 pt-10 md:px-10 md:pb-10 md:pt-12">
+          <span class="book-tab bg-pink">
+            <i data-lucide="list-video" class="h-4 w-4" aria-hidden="true"></i>
+            <span data-i18n="review_timeline"></span>
+          </span>
+          <h2 id="timeline-title" class="heading mb-6" data-i18n="review_timeline"></h2>
+          <div class="grid gap-6 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
+            <ul id="markers" class="space-y-3"></ul>
+            <div id="marker-detail" class="rounded-corner border-detail border-outline bg-ground p-5 md:p-6" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audience understanding on a pale-mint panel -->
+      <section class="mt-24" aria-labelledby="understanding-title">
+        <h2 id="understanding-title" class="heading" data-i18n="review_audienceUnderstanding"></h2>
+        <div id="understanding" class="mt-6 rounded-[30px] border-line border-outline bg-field p-6 md:p-10"></div>
+      </section>
+
+      <!-- Actions -->
+      <div class="mt-14 flex flex-wrap items-center justify-center gap-4">
+        <a href="prep-note.html" class="btn btn-primary btn-lg">
+          <i data-lucide="book-open" class="h-5 w-5" aria-hidden="true"></i>
+          <span data-i18n="review_prepNote"></span>
+        </a>
+        <a href="room.html" class="btn btn-secondary">
+          <i data-lucide="rotate-ccw" class="h-5 w-5" aria-hidden="true"></i>
+          <span data-i18n="review_retry"></span>
+        </a>
+        <a href="index.html" class="link-back">
+          <span data-i18n="review_backHome"></span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="vendor/lucide.min.js"></script>
+  <script type="module" src="js/review.js"></script>
+</body>
+</html>

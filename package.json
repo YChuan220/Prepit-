@@ -1,0 +1,21 @@
+{
+  "name": "prep-web",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Prep! practice-room prototype rebuilt with HTML, Node.js and Tailwind CSS (Playful Geometric style).",
+  "scripts": {
+    "postinstall": "node scripts/copy-assets.js",
+    "assets": "node scripts/copy-assets.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/css/styles.css --minify",
+    "build": "npm run assets && npm run build:css",
+    "dev": "npm run assets && concurrently -k -n css,web -c magenta,cyan \"tailwindcss -i ./src/input.css -o ./public/css/styles.css --watch\" \"node server.js\"",
+    "start": "npm run build && node server.js"
+  },
+  "devDependencies": {
+    "@fontsource-variable/host-grotesk": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "concurrently": "^9.2.1",
+    "lucide": "0.446.0",
+    "tailwindcss": "3.4.19"
+  }
+}

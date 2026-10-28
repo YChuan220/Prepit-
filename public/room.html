@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice room · Prep!</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="fonts/host-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header id="site-header" class="relative z-40" data-wide></header>
+
+  <main id="main" class="mx-auto w-full max-w-[1480px] px-4 pb-16 md:px-6 lg:px-8">
+    <ul id="info-chips" class="mb-5 flex flex-wrap gap-2.5" aria-label="Session settings"></ul>
+
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <!-- Rehearsal stage -->
+      <section class="relative overflow-hidden rounded-[28px] border-line border-outline bg-panel shadow-hard-lg" aria-labelledby="room-title">
+        <div class="flex flex-wrap items-start justify-between gap-4 px-5 pt-5 md:px-7 md:pt-6">
+          <div class="min-w-0">
+            <p class="eyebrow" data-i18n="room_simulated"></p>
+            <h1 id="room-title" class="mt-1 font-display text-2xl font-extrabold md:text-3xl"></h1>
+            <p id="room-subtitle" class="mt-1 text-ink/80"></p>
+          </div>
+          <p class="chip !px-4 !py-2 !text-label" >
+            <i data-lucide="clock" class="h-4 w-4 text-accent" aria-hidden="true"></i>
+            <span class="sr-only" data-i18n="room_elapsed"></span>
+            <span id="timer" class="font-display text-base font-extrabold tabular-nums">00:00</span>
+            <span class="text-ink/70">/ <span id="time-limit" class="tabular-nums">03:00</span></span>
+          </p>
+        </div>
+
+        <div class="mx-4 mt-5 rounded-[22px] border-detail border-outline bg-field p-4 md:mx-6 md:p-6">
+          <div class="grid gap-5 md:grid-cols-[minmax(0,1fr)_260px] md:items-start">
+            <!-- Presentation screen -->
+            <div class="relative">
+              <div class="rounded-[18px] border-line border-outline bg-panel px-5 py-8 text-center shadow-hard-accent md:px-8 md:py-10">
+                <p class="eyebrow text-accent" data-i18n="room_yourPresentation"></p>
+                <p id="screen-message" class="mt-2 font-display text-xl font-extrabold md:text-2xl"></p>
+                <p class="mt-2 text-meta text-ink/75" data-i18n="room_reactsHint"></p>
+              </div>
+              <!-- Live cue -->
+              <div id="live-cue" class="mt-4" aria-live="polite"></div>
+            </div>
+
+            <!-- Self view (never covers the audience) -->
+            <figure class="overflow-hidden rounded-[18px] border-line border-outline bg-slate shadow-hard-pink">
+              <figcaption class="flex items-center justify-between gap-2 border-b-2 border-outline px-3 py-2 text-meta font-semibold text-ground">
+                <span data-i18n="room_selfView"></span>
+                <span id="rec-indicator" class="hidden items-center gap-1.5 rounded-full bg-pink px-2 py-0.5 text-[12px] font-bold text-ink">
+                  <span class="h-2 w-2 rounded-full border border-outline bg-ink" aria-hidden="true"></span>
+                  <span id="rec-label"></span>
+                </span>
+              </figcaption>
+              <div class="relative aspect-video">
+                <video id="self-video" class="hidden h-full w-full -scale-x-100 object-cover" autoplay muted playsinline></video>
+                <div id="cam-off" class="absolute inset-0 hidden items-center justify-center text-ground/70">
+                  <i data-lucide="camera-off" class="h-8 w-8" aria-hidden="true"></i>
+                </div>
+                <div id="cam-prompt" class="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4 text-center text-ground">
+                  <span id="cam-prompt-icon" class="inline-flex"><i data-lucide="camera" class="h-7 w-7" aria-hidden="true"></i></span>
+                  <p id="cam-prompt-text" class="text-meta" data-i18n="room_cameraHint"></p>
+                  <button type="button" id="btn-enable-cam" class="btn btn-warm btn-sm mt-1">
+                    <span data-i18n="room_enableCamera"></span>
+                  </button>
+                </div>
+              </div>
+            </figure>
+          </div>
+
+          <!-- Audience -->
+          <ul id="audience" class="mt-8 grid grid-cols-3 items-end gap-x-3 gap-y-6 sm:grid-cols-6" aria-label="Audience"></ul>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-wrap items-center justify-center gap-3 px-5 py-6">
+          <div id="pre-controls" class="flex flex-wrap items-center justify-center gap-3">
+            <button type="button" id="btn-start" class="btn btn-primary btn-lg">
+              <i data-lucide="play" class="h-5 w-5" aria-hidden="true"></i>
+              <span id="btn-start-label"></span>
+            </button>
+            <button type="button" id="btn-demo" class="btn btn-secondary" hidden>
+              <span data-i18n="room_demoStart"></span>
+            </button>
+          </div>
+          <div id="live-controls" class="flex flex-wrap items-center justify-center gap-3" hidden>
+            <button type="button" id="btn-pause" class="btn btn-secondary">
+              <span id="pause-icon" class="inline-flex"><i data-lucide="pause" class="h-5 w-5" aria-hidden="true"></i></span>
+              <span id="pause-label"></span>
+            </button>
+            <button type="button" id="btn-cam" class="btn btn-secondary" aria-pressed="true">
+              <i data-lucide="camera" class="h-5 w-5" aria-hidden="true"></i>
+              <span data-i18n="room_camera"></span>
+            </button>
+            <button type="button" id="btn-mic" class="btn btn-secondary" aria-pressed="true">
+              <i data-lucide="mic" class="h-5 w-5" aria-hidden="true"></i>
+              <span data-i18n="room_mic"></span>
+            </button>
+            <button type="button" id="btn-end" class="btn btn-pink">
+              <i data-lucide="square" class="h-5 w-5" aria-hidden="true"></i>
+              <span data-i18n="room_end"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Question prompt sits right after the controls in reading order -->
+        <div id="question" class="px-5 pb-6 md:px-7" aria-live="polite"></div>
+
+        <div class="border-t-line border-outline bg-panel" aria-hidden="true">
+          <div class="h-3 w-full bg-selection">
+            <div id="progress" class="h-full w-0 border-r-2 border-outline bg-amber"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live interaction panel -->
+      <aside class="panel flex flex-col p-5" aria-labelledby="signals-title">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="eyebrow" data-i18n="room_liveRoom"></p>
+            <h2 id="signals-title" class="mt-1 subheading" data-i18n="room_signals"></h2>
+          </div>
+          <span class="tile-icon h-10 w-10 bg-selection"><i data-lucide="message-circle-question" class="h-5 w-5" aria-hidden="true"></i></span>
+        </div>
+        <p class="mt-4 rounded-corner border-detail border-outline bg-selection p-3 text-meta leading-relaxed" data-i18n="room_signalsHint"></p>
+
+        <h3 class="mt-6 text-label font-bold" data-i18n="room_liveReactions"></h3>
+        <ol id="reaction-log" class="mt-2 flex-1 space-y-2" aria-live="polite"></ol>
+
+        <div class="mt-6 rounded-corner border-detail border-outline bg-amber p-3">
+          <p class="text-label font-bold" data-i18n="room_ruleTitle"></p>
+          <p class="mt-1 text-meta leading-relaxed" data-i18n="room_rule"></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="vendor/lucide.min.js"></script>
+  <script type="module" src="js/room.js"></script>
+</body>
+</html>

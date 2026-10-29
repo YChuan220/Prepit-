@@ -20,6 +20,7 @@ export const audienceOptions = [
 
 // 2 min added so drill presets (120 s) map to a visible choice.
 export const timeOptions = [60, 120, 180, 300, 600];
+export const CUSTOM = 'custom';
 
 export const goalOptions = ['explain', 'persuade', 'approval', 'questions', 'research', 'sell'];
 
@@ -37,12 +38,20 @@ export const defaultConfig = {
   timeLimit: 180,
   goal: 'persuade',
   mode: 'full',
-  materials: [],
+  deck: null, // { name, size, pages } - the PDF itself lives in IndexedDB
   script: '',
   speakerNotes: '',
   keyMessages: '',
   expectedQuestions: '',
   challengeId: null,
+  // Custom values used when an option group is set to 'custom'
+  customScenario: '',
+  customAudience: '',
+  customAudienceCount: 10,
+  customLanguage: '',
+  customMinutes: 4,
+  timeCustom: false,
+  customGoal: '',
 };
 
 export const drills = [

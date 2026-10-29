@@ -41,8 +41,8 @@ const dict = {
   footer_pages: { en: 'Pages', zh: '頁面' },
   footer_prototype: { en: 'Prototype', zh: 'Prototype' },
   footer_prototypeDesc: {
-    en: 'AI scoring, audience reactions and prep notes are simulated. Your recording stays in this browser.',
-    zh: 'AI 評分、觀眾反應與備忘卡目前為模擬資料；錄影只存在這個瀏覽器裡。',
+    en: 'AI scoring, audience reactions and prep notes are simulated. Your slides and recording stay in this browser.',
+    zh: 'AI 評分、觀眾反應與備忘卡目前為模擬資料；你的簡報與錄影只存在這個瀏覽器裡。',
   },
 
   // Scenarios
@@ -206,6 +206,56 @@ const dict = {
   prep_saved: { en: 'Saved!', zh: '已儲存！' },
   prep_done: { en: 'Done', zh: '完成' },
   prep_backReview: { en: 'Back to review', zh: '回到練習回顧' },
+
+  // Setup: custom values
+  setup_custom: { en: 'Custom', zh: '自訂' },
+  setup_customScenario: { en: 'Name your situation', zh: '你的場合' },
+  setup_customScenarioPh: { en: 'e.g. Club recruitment talk', zh: '例如：社團招生說明會' },
+  setup_customAudience: { en: 'Who is listening?', zh: '聽眾是誰？' },
+  setup_customAudiencePh: { en: 'e.g. First-year students', zh: '例如：大一新生' },
+  setup_customAudienceCount: { en: 'How many people?', zh: '大約幾個人？' },
+  setup_customLanguage: { en: 'Language', zh: '語言' },
+  setup_customLanguagePh: { en: 'e.g. 日本語', zh: '例如：日本語' },
+  setup_customMinutes: { en: 'Minutes (1–60)', zh: '分鐘（1–60）' },
+  setup_customGoal: { en: 'Your goal', zh: '你的目標' },
+  setup_customGoalPh: { en: 'e.g. Get 20 people to sign up', zh: '例如：讓 20 個人報名' },
+  setup_err_required: { en: 'Fill this in, or pick another option.', zh: '請填寫，或改選其他選項。' },
+  setup_err_count: { en: 'Enter a number from 1 to 500.', zh: '請輸入 1 到 500 之間的數字。' },
+  setup_err_minutes: { en: 'Enter a number from 1 to 60.', zh: '請輸入 1 到 60 之間的數字。' },
+  setup_modeNote: { en: 'Practice modes are fixed because each one changes how the room behaves.', zh: '練習模式是固定的，因為每一種都會改變練習室的運作方式。' },
+  setup_pickDrill: { en: 'Choose a drill', zh: '選擇一個練習' },
+  setup_noDrill: { en: 'No specific drill', zh: '不指定練習' },
+
+  // Setup: slides
+  setup_deckTitle: { en: 'Slides (PDF)', zh: '簡報（PDF）' },
+  setup_deckChoose: { en: 'Choose a PDF', zh: '選擇 PDF 檔案' },
+  setup_deckDrop: { en: 'or drop it here', zh: '或直接拖曳到這裡' },
+  setup_deckHint: { en: 'PDF up to 50 MB. Export PowerPoint or Keynote as PDF first. The file stays in this browser.', zh: 'PDF，最大 50 MB。PowerPoint、Keynote 請先匯出成 PDF。檔案只會存在這個瀏覽器裡。' },
+  setup_deckReading: { en: 'Reading your PDF…', zh: '正在讀取 PDF…' },
+  setup_deckPages: { en: 'pages', zh: '頁' },
+  setup_deckReplace: { en: 'Replace', zh: '更換' },
+  setup_deckRemove: { en: 'Remove', zh: '移除' },
+  setup_deckErrType: { en: 'That file isn’t a PDF. Export your slides as PDF and try again.', zh: '這不是 PDF 檔。請先把簡報匯出成 PDF 再上傳。' },
+  setup_deckErrSize: { en: 'That PDF is larger than 50 MB.', zh: '這個 PDF 超過 50 MB。' },
+  setup_deckErrRead: { en: 'This PDF couldn’t be opened. It may be damaged or password-protected.', zh: '無法開啟這個 PDF，可能已損毀或有密碼保護。' },
+  setup_deckErrSave: { en: 'This browser couldn’t store the file. Try a smaller PDF.', zh: '這個瀏覽器無法儲存檔案，請試試較小的 PDF。' },
+  setup_deckPreview: { en: 'First page of', zh: '第一頁預覽：' },
+
+  // Room: slides + leaving
+  room_slide: { en: 'Slide', zh: '投影片' },
+  room_prevSlide: { en: 'Previous slide', zh: '上一頁' },
+  room_nextSlide: { en: 'Next slide', zh: '下一頁' },
+  room_slideKeys: { en: 'Use ← → to change slides', zh: '可用鍵盤 ← → 換頁' },
+  room_deckMissing: { en: 'Your slides couldn’t be loaded. Go back to setup and upload them again.', zh: '無法載入簡報，請回到設定重新上傳。' },
+  room_backSetup: { en: 'Back to setup', zh: '回到設定' },
+  room_leaveTitle: { en: 'Leave the practice room?', zh: '要離開練習室嗎？' },
+  room_leaveBody: {
+    en: 'This run’s recording and audience reactions will be lost. Your setup and slides are kept.',
+    zh: '這次練習的錄影和觀眾反應會遺失；你的設定和簡報會保留。',
+  },
+  room_leaveStay: { en: 'Keep practicing', zh: '繼續練習' },
+  room_leaveGo: { en: 'Leave and edit setup', zh: '離開並修改設定' },
+  room_autoPaused: { en: 'Paused while you decide.', zh: '已先幫你暫停。' },
 
   // Drills
   drill_duration: { en: 'Duration', zh: '時長' },

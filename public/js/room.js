@@ -1,15 +1,15 @@
 import { t, getLang } from './i18n.js';
-import { scenarios, audienceOptions, getReactionEvents, reactionCopy, roomSubtitle } from './data.js';
-import { getConfig, saveSession, saveRecording } from './store.js';
+import { getReactionEvents, reactionCopy, roomSubtitle } from './data.js';
+import { getConfig, saveSession, saveRecording, loadDeck, setReturnStep } from './store.js';
+import { roomTitle, audienceLabel, audienceCount, languageLabel, goalLabel, reactionScenario } from './labels.js';
 import { bootPage, esc, icon, fmtTime, refreshIcons } from './ui.js';
 import { avatarSVG } from './avatar.js';
 
 const config = getConfig();
 const $ = (id) => document.getElementById(id);
 
-const audience = audienceOptions.find((a) => a.id === config.audience);
-const avatarCount = audience ? Math.min(audience.count, 6) : 5;
-const events = getReactionEvents(config.scenario);
+const avatarCount = Math.min(audienceCount(config), 6);
+const events = getReactionEvents(reactionScenario(config));
 const timeLimit = Number(config.timeLimit) || 180;
 
 const state = {
@@ -29,6 +29,11 @@ const state = {
   log: [], // { time, key | text }
   cue: null, // { kind, title:{en,zh}, text:{en,zh} }
   question: null, // { en, zh }
+  leaving: false,
+  // slides
+  deck: null, // PDFDocumentProxy
+  slide: 1,
+  slides: 0,
 };
 let tickTimer = null;
 let cueTimer = null;
@@ -38,12 +43,13 @@ const L = (pair) => (getLang() === 'en' ? pair.en : pair.zh);
 /* ---------- rendering ---------- */
 function renderChips() {
   const lang = getLang();
-  const scenario = scenarios.find((s) => s.id === config.scenario) || scenarios[0];
+  const title = roomTitle(config, lang);
+  const audience = audienceLabel(config, lang);
   const chips = [
-    ['video', t('room_scenario'), lang === 'en' ? scenario.room[0] : scenario.room[1]],
-    ['users', t('room_audience'), audience ? (lang === 'en' ? audience.en : audience.zh) : '—'],
-    ['globe', t('room_language'), config.practiceLanguage === 'en' ? 'English' : '中文'],
-    ['target', t('room_goal'), t(`goal_${config.goal}`)],
+    ['video', t('room_scenario'), title],
+    ['users', t('room_audience'), audience || '—'],
+    ['globe', t('room_language'), languageLabel(config)],
+    ['target', t('room_goal'), goalLabel(config, lang)],
   ];
   $('info-chips').innerHTML = chips
     .map(
@@ -54,9 +60,9 @@ function renderChips() {
       </li>`,
     )
     .join('');
-  $('room-title').textContent = lang === 'en' ? scenario.room[0] : scenario.room[1];
-  $('room-subtitle').textContent = roomSubtitle(config.scenario, audience ? (lang === 'en' ? audience.en : audience.zh) : '', lang);
-  const message = config.keyMessages?.split('\n').find((l) => l.trim()) || config.materials?.[0];
+  $('room-title').textContent = title;
+  $('room-subtitle').textContent = roomSubtitle(config.scenario, audience, lang);
+  const message = config.keyMessages?.split('\n').find((l) => l.trim());
   $('screen-message').textContent = message || t('room_keyMessagePh');
   $('time-limit').textContent = fmtTime(timeLimit);
 }
@@ -374,7 +380,109 @@ function toggleTrack(kind) {
   paintDynamic();
 }
 
+/* ---------- slides ---------- */
+let renderSlideTimer = null;
+
+async function setupSlides() {
+  if (!config.deck) return;
+  try {
+    const blob = await loadDeck();
+    if (!blob) throw new Error('missing');
+    const { openPdf } = await import('./deck.js');
+    state.deck = await openPdf(blob);
+    state.slides = state.deck.numPages;
+    state.slide = 1;
+    $('screen-placeholder').classList.add('hidden');
+    $('slide-viewer').classList.remove('hidden');
+    $('slide-total').textContent = String(state.slides);
+    await showSlide(1);
+    new ResizeObserver(() => {
+      clearTimeout(renderSlideTimer);
+      renderSlideTimer = setTimeout(() => showSlide(state.slide), 120);
+    }).observe($('slide-stage'));
+  } catch {
+    $('deck-error').classList.remove('hidden');
+  }
+}
+
+async function showSlide(n) {
+  if (!state.deck) return;
+  state.slide = Math.min(Math.max(1, n), state.slides);
+  $('slide-index').textContent = String(state.slide);
+  $('btn-prev-slide').disabled = state.slide === 1;
+  $('btn-next-slide').disabled = state.slide === state.slides;
+  const stage = $('slide-stage');
+  const canvas = $('slide-canvas');
+  canvas.setAttribute('aria-label', `${t('room_slide')} ${state.slide} / ${state.slides}`);
+  const { renderPage } = await import('./deck.js');
+  await renderPage(state.deck, state.slide, canvas, stage.clientWidth - 6, stage.clientHeight - 6);
+}
+
+/* ---------- leaving the room ---------- */
+const sessionActive = () => state.recording && !state.ending;
+let resumeOnStay = false;
+
+function leaveToSetup() {
+  state.leaving = true;
+  clearInterval(tickTimer);
+  if (state.recorder && state.recorder.state !== 'inactive') {
+    try {
+      state.recorder.stop();
+    } catch {
+      /* ignore */
+    }
+  }
+  state.stream?.getTracks().forEach((track) => track.stop());
+  setReturnStep(3);
+  location.href = 'setup.html';
+}
+
+function askToLeave() {
+  if (!sessionActive()) return leaveToSetup();
+  resumeOnStay = !state.paused;
+  if (resumeOnStay) handlePause(); // pause the timer, audience and recording while deciding
+  $('leave-paused').classList.toggle('hidden', !resumeOnStay);
+  $('leave-dialog').showModal();
+}
+
+function stayInRoom() {
+  if ($('leave-dialog').open) $('leave-dialog').close();
+  if (resumeOnStay && state.paused) handlePause();
+  resumeOnStay = false;
+  $('btn-back-setup').focus();
+}
+
 /* ---------- wiring ---------- */
+$('btn-back-setup').addEventListener('click', askToLeave);
+$('btn-leave-stay').addEventListener('click', stayInRoom);
+$('btn-leave-go').addEventListener('click', () => {
+  $('leave-dialog').close();
+  leaveToSetup();
+});
+$('leave-dialog').addEventListener('cancel', (e) => {
+  e.preventDefault(); // Esc = keep practicing
+  stayInRoom();
+});
+$('btn-prev-slide').addEventListener('click', () => showSlide(state.slide - 1));
+$('btn-next-slide').addEventListener('click', () => showSlide(state.slide + 1));
+document.addEventListener('keydown', (e) => {
+  if (!state.deck || $('leave-dialog').open || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  if (['ArrowRight', 'PageDown'].includes(e.key)) {
+    e.preventDefault();
+    showSlide(state.slide + 1);
+  } else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+    e.preventDefault();
+    showSlide(state.slide - 1);
+  }
+});
+// Closing the tab or using the browser's Back during a run triggers the browser's own warning.
+window.addEventListener('beforeunload', (e) => {
+  if (sessionActive() && !state.leaving) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 $('btn-enable-cam').addEventListener('click', enableCamera);
 $('btn-start').addEventListener('click', handleStart);
 $('btn-demo').addEventListener('click', begin);
@@ -403,4 +511,8 @@ $('question').addEventListener('click', (e) => {
 });
 window.addEventListener('pagehide', () => state.stream?.getTracks().forEach((track) => track.stop()));
 
-bootPage(renderAll);
+bootPage(() => {
+  renderAll();
+  if (state.deck) $('slide-canvas').setAttribute('aria-label', `${t('room_slide')} ${state.slide} / ${state.slides}`);
+});
+setupSlides();

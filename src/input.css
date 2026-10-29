@@ -266,6 +266,13 @@
   .meter > span { @apply block h-full border-r-2 border-outline; }
 
   .sr-only-focusable:not(:focus) { @apply sr-only; }
+
+  /* Modal dialog (native <dialog>, so focus is trapped and Esc cancels). */
+  .dialog {
+    @apply w-[min(92vw,560px)] rounded-[26px] border-line border-outline bg-panel p-6 text-ink md:p-8;
+    box-shadow: 8px 8px 0 0 var(--dp-color-outline);
+  }
+  .dialog::backdrop { background: rgb(37 43 58 / 0.55); }
 }
 
 /* ---------- Motion preferences ---------- */

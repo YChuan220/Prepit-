@@ -102,3 +102,41 @@ export async function loadRecording() {
     return null;
   }
 }
+
+/* Uploaded slide deck (PDF Blob). Stays in this browser only. */
+export async function saveDeck(blob) {
+  try {
+    if (blob) await tx('readwrite', (s) => s.put(blob, 'deck'));
+    else await tx('readwrite', (s) => s.delete('deck'));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function loadDeck() {
+  try {
+    return (await tx('readonly', (s) => s.get('deck'))) || null;
+  } catch {
+    return null;
+  }
+}
+
+/* Room -> Setup: reopen setup on a given step without resetting the config. */
+const RETURN_KEY = 'prep:returnStep';
+export function setReturnStep(step) {
+  try {
+    sessionStorage.setItem(RETURN_KEY, String(step));
+  } catch {
+    /* ignore */
+  }
+}
+export function takeReturnStep() {
+  try {
+    const v = sessionStorage.getItem(RETURN_KEY);
+    sessionStorage.removeItem(RETURN_KEY);
+    return v ? Number(v) : null;
+  } catch {
+    return null;
+  }
+}

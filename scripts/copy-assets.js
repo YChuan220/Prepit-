@@ -1,4 +1,4 @@
-// Copies self-hosted fonts and the Lucide icon script from node_modules into public/.
+// Copies self-hosted fonts, the Lucide icon script and PDF.js from node_modules into public/.
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -9,6 +9,8 @@ const copies = [
   ['node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2', 'public/fonts/instrument-sans-latin.woff2'],
   ['node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-ext-wght-normal.woff2', 'public/fonts/instrument-sans-latin-ext.woff2'],
   ['node_modules/lucide/dist/umd/lucide.min.js', 'public/vendor/lucide.min.js'],
+  ['node_modules/pdfjs-dist/build/pdf.min.mjs', 'public/vendor/pdf.min.mjs'],
+  ['node_modules/pdfjs-dist/build/pdf.worker.min.mjs', 'public/vendor/pdf.worker.min.mjs'],
 ];
 
 for (const [from, to] of copies) {
@@ -21,4 +23,4 @@ for (const [from, to] of copies) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
 }
-console.log('[assets] fonts and icons copied to public/');
+console.log('[assets] fonts, icons and PDF.js copied to public/');
